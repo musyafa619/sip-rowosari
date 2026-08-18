@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -20,11 +20,10 @@ const complaintSchema = z.object({
   deskripsi: z.string().min(20, 'Deskripsi minimal 20 karakter'),
 })
 
-export default function FormPengaduan() {
+export default function FormPengaduan({ onSubmitSuccess }) {
   const [photos, setPhotos] = useState([])
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState('')
-  const fileInputRef = useRef(null)
 
   const {
     register,
@@ -38,20 +37,24 @@ export default function FormPengaduan() {
     },
   })
 
-  const handlePhotoUpload = (e) => {
+  const handlePhotoUpload = useCallback((e) => {
     const files = Array.from(e.target.files)
-    if (photos.length + files.length > 3) {
-      alert('Maksimal 3 foto')
-      return
-    }
+    if (files.length === 0) return
 
-    const newPhotos = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }))
+    setPhotos((prev) => {
+      if (prev.length + files.length > 3) {
+        alert('Maksimal 3 foto')
+        return prev
+      }
+      const newPhotos = files.map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+      }))
+      return [...prev, ...newPhotos]
+    })
 
-    setPhotos((prev) => [...prev, ...newPhotos])
-  }
+    e.target.value = ''
+  }, [])
 
   const removePhoto = (index) => {
     setPhotos((prev) => {
@@ -114,6 +117,7 @@ export default function FormPengaduan() {
       setIsSubmitted(true)
       reset()
       setPhotos([])
+      onSubmitSuccess?.()
       setTimeout(() => setIsSubmitted(false), 5000)
     } catch (err) {
       console.error('Submit error:', err)
@@ -269,23 +273,23 @@ export default function FormPengaduan() {
                 </div>
               ))}
               {photos.length < 3 && (
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-24 h-24 rounded-lg border-2 border-dashed border-gray-300 hover:border-primary flex flex-col items-center justify-center cursor-pointer transition-colors"
-                >
-                  <Upload className="w-6 h-6 text-gray-400" />
-                  <span className="text-xs text-gray-400 mt-1">Upload</span>
-                </button>
+                <div className="relative">
+                  <button
+                    type="button"
+                    className="w-24 h-24 rounded-lg border-2 border-dashed border-gray-300 hover:border-primary flex flex-col items-center justify-center cursor-pointer transition-colors"
+                  >
+                    <Upload className="w-6 h-6 text-gray-400" />
+                    <span className="text-xs text-gray-400 mt-1">Upload</span>
+                  </button>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handlePhotoUpload}
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
+                  />
+                </div>
               )}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={handlePhotoUpload}
-              />
             </div>
           </div>
 

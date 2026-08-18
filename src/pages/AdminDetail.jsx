@@ -97,8 +97,8 @@ export default function AdminDetail() {
           <p className="text-gray-500 mb-4">
             Pengaduan dengan ID tersebut tidak ada
           </p>
-          <Button onClick={() => navigate('/admin/dashboard')}>
-            Kembali ke Dashboard
+          <Button onClick={() => navigate('/admin/pengaduan')}>
+            Kembali ke Pengaduan
           </Button>
         </div>
       </div>
@@ -110,11 +110,11 @@ export default function AdminDetail() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Button
           variant="ghost"
-          onClick={() => navigate('/admin/dashboard')}
+          onClick={() => navigate('/admin/pengaduan')}
           className="mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Kembali ke Dashboard
+          Kembali ke Pengaduan
         </Button>
 
         {showSuccess && (
