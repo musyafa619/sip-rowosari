@@ -17,6 +17,19 @@ body {
   line-height: 1.6;
 }
 
+/* Prevent Preflight from breaking file inputs */
+@layer base {
+  input[type="file"] {
+    -webkit-appearance: auto;
+    appearance: auto;
+  }
+  input[type="file"]::file-selector-button {
+    -webkit-appearance: auto;
+    appearance: auto;
+    cursor: pointer;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
