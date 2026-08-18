@@ -12,16 +12,13 @@ export default function AdminInfoCenter() {
 
   useEffect(() => {
     const isAdmin = localStorage.getItem('isAdmin') === 'true'
-    if (!isAdmin) {
-      navigate('/admin/login')
-    }
+    if (!isAdmin) navigate('/admin/login')
   }, [navigate])
 
   const fetchCount = useCallback(async () => {
     const { count } = await supabase
       .from('informations')
       .select('*', { count: 'exact', head: true })
-
     setTotal(count || 0)
   }, [])
 
@@ -34,26 +31,19 @@ export default function AdminInfoCenter() {
   }
 
   const handleDelete = async (info) => {
-    if (!confirm(`Hapus informasi "${info.judul}"? Tindakan ini tidak dapat dibatalkan.`)) {
-      return
-    }
+    if (!confirm(`Hapus "${info.judul}"?`)) return
 
     if (info.foto_urls?.length > 0) {
       const paths = info.foto_urls.map((url) => {
         const parts = url.split('/')
         return parts.slice(parts.indexOf('info-photos') + 1).join('/')
       })
-
       await supabase.storage.from('info-photos').remove(paths)
     }
 
-    const { error } = await supabase
-      .from('informations')
-      .delete()
-      .eq('id', info.id)
-
+    const { error } = await supabase.from('informations').delete().eq('id', info.id)
     if (error) {
-      alert('Gagal menghapus informasi.')
+      alert('Gagal menghapus.')
       return
     }
 
@@ -63,50 +53,25 @@ export default function AdminInfoCenter() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/admin/dashboard')}
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Dashboard
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/admin/dashboard')} className="-ml-2">
+              <ArrowLeft className="w-3.5 h-3.5 mr-1" />
             </Button>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
-                <Newspaper className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Pusat Informasi</h1>
-                <p className="text-sm text-gray-500">Kelola informasi untuk warga</p>
-              </div>
-            </div>
+            <Newspaper className="w-4 h-4 text-gray-600" />
+            <h1 className="text-lg font-semibold text-gray-900">Informasi</h1>
+            <span className="text-xs text-gray-400">{total}</span>
           </div>
 
-          <Button onClick={() => navigate('/admin/informasi/baru')}>
-            <Plus className="w-4 h-4 mr-2" />
-            Buat Informasi
+          <Button size="sm" onClick={() => navigate('/admin/informasi/baru')}>
+            <Plus className="w-3.5 h-3.5 mr-1" />
+            Buat Baru
           </Button>
         </div>
 
-        <Card className="mb-6">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center">
-                <Newspaper className="w-5 h-5 text-secondary" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900">{total}</p>
-                <p className="text-xs text-gray-500">Total Informasi</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <InfoList
               showAdminActions={true}
               onEdit={handleEdit}

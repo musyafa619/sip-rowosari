@@ -11,24 +11,24 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#16A34A',
-          hover: '#15803D',
-          light: '#DCFCE7',
+          DEFAULT: '#1a7f37',
+          hover: '#15612a',
+          light: '#eef6f0',
         },
         secondary: {
-          DEFAULT: '#0EA5E9',
-          light: '#E0F2FE',
+          DEFAULT: '#4a5568',
+          light: '#edf0f4',
         },
-        surface: '#F8FAFC',
-        'bg-alt': '#F0FDF4',
+        surface: '#f7f8fa',
+        'bg-alt': '#f0f2f5',
         status: {
-          menunggu: '#F59E0B',
-          diproses: '#3B82F6',
-          selesai: '#10B981',
+          menunggu: '#d97706',
+          diproses: '#2563eb',
+          selesai: '#059669',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
       },
     },
   },

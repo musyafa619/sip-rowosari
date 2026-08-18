@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LayoutDashboard, FileText, Newspaper, ArrowRight } from 'lucide-react'
+import { FileText, Newspaper, ArrowRight } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { supabase } from '@/lib/supabase'
 
@@ -11,9 +11,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const isAdmin = localStorage.getItem('isAdmin') === 'true'
-    if (!isAdmin) {
-      navigate('/admin/login')
-    }
+    if (!isAdmin) navigate('/admin/login')
   }, [navigate])
 
   const fetchCounts = useCallback(async () => {
@@ -21,7 +19,6 @@ export default function AdminDashboard() {
       supabase.from('complaints').select('*', { count: 'exact', head: true }),
       supabase.from('informations').select('*', { count: 'exact', head: true }),
     ])
-
     setComplaintCount(complaints.count || 0)
     setInfoCount(infos.count || 0)
   }, [])
@@ -32,62 +29,47 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <LayoutDashboard className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard Admin</h1>
-              <p className="text-sm text-gray-500">Kelola pengaduan dan informasi warga RW Rowosari</p>
-            </div>
-          </div>
-        </div>
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+        <h1 className="text-lg font-semibold text-gray-900 mb-1">Dashboard</h1>
+        <p className="text-xs text-gray-500 mb-6">Kelola pengaduan dan informasi warga</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Pengaduan Card */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Card
-            className="hover:shadow-lg transition-shadow cursor-pointer group"
+            className="cursor-pointer hover:border-gray-300 transition-colors"
             onClick={() => navigate('/admin/pengaduan')}
           >
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
-                    <FileText className="w-7 h-7 text-primary" />
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-gray-600" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Pusat Pengaduan</h2>
-                    <p className="text-sm text-gray-500 mt-1">Kelola pengaduan warga</p>
-                    <p className="text-2xl font-bold text-primary mt-2">{complaintCount}</p>
-                    <p className="text-xs text-gray-400">total pengaduan</p>
+                    <p className="text-sm font-medium text-gray-900">Pengaduan</p>
+                    <p className="text-xs text-gray-400">{complaintCount} total</p>
                   </div>
                 </div>
-                <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" />
+                <ArrowRight className="w-4 h-4 text-gray-300" />
               </div>
             </CardContent>
           </Card>
 
-          {/* Informasi Card */}
           <Card
-            className="hover:shadow-lg transition-shadow cursor-pointer group"
+            className="cursor-pointer hover:border-gray-300 transition-colors"
             onClick={() => navigate('/admin/informasi')}
           >
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-secondary/10 rounded-xl flex items-center justify-center">
-                    <Newspaper className="w-7 h-7 text-secondary" />
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center">
+                    <Newspaper className="w-4 h-4 text-gray-600" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Pusat Informasi</h2>
-                    <p className="text-sm text-gray-500 mt-1">Kelola informasi untuk warga</p>
-                    <p className="text-2xl font-bold text-secondary mt-2">{infoCount}</p>
-                    <p className="text-xs text-gray-400">total informasi</p>
+                    <p className="text-sm font-medium text-gray-900">Informasi</p>
+                    <p className="text-xs text-gray-400">{infoCount} total</p>
                   </div>
                 </div>
-                <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-secondary transition-colors" />
+                <ArrowRight className="w-4 h-4 text-gray-300" />
               </div>
             </CardContent>
           </Card>

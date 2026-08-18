@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Calendar, ArrowRight } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
+import { ArrowRight } from 'lucide-react'
 import { formatDate, truncateText } from '@/lib/utils'
 
 export default function InfoCard({ info, showAdminActions = false, onEdit, onDelete }) {
@@ -9,59 +8,33 @@ export default function InfoCard({ info, showAdminActions = false, onEdit, onDel
   const plainText = info.konten?.replace(/<[^>]*>/g, '') || ''
 
   return (
-    <Card className="hover:shadow-md transition-shadow overflow-hidden">
-      <div className="flex flex-col sm:flex-row">
+    <div className="border border-gray-200 rounded-md overflow-hidden hover:border-gray-300 transition-colors">
+      <div className="flex">
         {coverImage && (
-          <div className="sm:w-48 sm:h-auto h-48 shrink-0">
-            <img
-              src={coverImage}
-              alt={info.judul}
-              className="w-full h-full object-cover"
-            />
+          <div className="w-28 sm:w-36 shrink-0">
+            <img src={coverImage} alt={info.judul} className="w-full h-full object-cover" />
           </div>
         )}
-        <CardContent className={`p-4 sm:p-5 flex-1 ${!coverImage ? 'pt-5' : ''}`}>
-          <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-            <Calendar className="w-3.5 h-3.5" />
-            {formatDate(info.created_at)}
-          </div>
+        <div className="p-3.5 flex-1 min-w-0">
+          <p className="text-[11px] text-gray-400 mb-1">{formatDate(info.created_at)}</p>
+          <h3 className="text-sm font-medium text-gray-900 mb-1 truncate">{info.judul}</h3>
+          <p className="text-xs text-gray-500 mb-2 line-clamp-2">{truncateText(plainText, 120)}</p>
 
-          <h3 className="font-semibold text-gray-900 mb-1.5">
-            {info.judul}
-          </h3>
-
-          <p className="text-sm text-gray-600 mb-3">
-            {truncateText(plainText, 150)}
-          </p>
-
-          <div className="flex items-center gap-2">
-            {showAdminActions ? (
-              <>
-                <button
-                  onClick={() => onEdit?.(info)}
-                  className="text-sm text-primary hover:text-primary-hover font-medium transition-colors"
-                >
-                  Edit
-                </button>
-                <span className="text-gray-300">|</span>
-                <button
-                  onClick={() => onDelete?.(info)}
-                  className="text-sm text-red-500 hover:text-red-600 font-medium transition-colors"
-                >
-                  Hapus
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => navigate(`/informasi/${info.id}`)}
-                className="flex items-center gap-1 text-sm text-primary hover:text-primary-hover font-medium transition-colors"
-              >
-                Baca selengkapnya <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-        </CardContent>
+          {showAdminActions ? (
+            <div className="flex items-center gap-3">
+              <button onClick={() => onEdit?.(info)} className="text-xs text-primary font-medium">Edit</button>
+              <button onClick={() => onDelete?.(info)} className="text-xs text-red-500 font-medium">Hapus</button>
+            </div>
+          ) : (
+            <button
+              onClick={() => navigate(`/informasi/${info.id}`)}
+              className="flex items-center gap-1 text-xs text-primary font-medium"
+            >
+              Baca <ArrowRight className="w-3 h-3" />
+            </button>
+          )}
+        </div>
       </div>
-    </Card>
+    </div>
   )
 }

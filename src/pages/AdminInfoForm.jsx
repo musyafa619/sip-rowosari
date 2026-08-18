@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Save, Newspaper } from 'lucide-react'
+import { ArrowLeft, Save, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import RichTextEditor from '@/components/RichTextEditor'
 import InfoImageUpload from '@/components/InfoImageUpload'
 import { supabase } from '@/lib/supabase'
@@ -59,14 +59,11 @@ export default function AdminInfoForm() {
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`
       const filePath = `informations/${fileName}`
 
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from('info-photos')
         .upload(filePath, photo.file)
 
-      if (error) {
-        console.error('Upload error:', error)
-        throw error
-      }
+      if (error) throw error
 
       const { data: urlData } = supabase.storage
         .from('info-photos')
@@ -108,30 +105,20 @@ export default function AdminInfoForm() {
       if (isEditing) {
         const { error: updateError } = await supabase
           .from('informations')
-          .update({
-            judul: judul.trim(),
-            konten,
-            foto_urls: fotoUrls,
-          })
+          .update({ judul: judul.trim(), konten, foto_urls: fotoUrls })
           .eq('id', id)
-
         if (updateError) throw updateError
       } else {
         const { error: insertError } = await supabase
           .from('informations')
-          .insert({
-            judul: judul.trim(),
-            konten,
-            foto_urls: fotoUrls,
-          })
-
+          .insert({ judul: judul.trim(), konten, foto_urls: fotoUrls })
         if (insertError) throw insertError
       }
 
       navigate('/admin/informasi')
     } catch (err) {
       console.error('Save error:', err)
-      setError('Gagal menyimpan informasi. Silakan coba lagi.')
+      setError('Gagal menyimpan.')
     } finally {
       setSaving(false)
     }
@@ -140,43 +127,34 @@ export default function AdminInfoForm() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-gray-300 border-t-primary rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-surface">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate('/admin/informasi')}
-          className="mb-6"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+        <Button variant="ghost" size="sm" onClick={() => navigate('/admin/informasi')} className="mb-4 -ml-2">
+          <ArrowLeft className="w-3.5 h-3.5 mr-1" />
           Kembali
         </Button>
 
+        <h1 className="text-lg font-semibold text-gray-900 mb-5">
+          {isEditing ? 'Edit Informasi' : 'Buat Informasi'}
+        </h1>
+
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Newspaper className="w-5 h-5 text-primary" />
-              {isEditing ? 'Edit Informasi' : 'Buat Informasi Baru'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <CardContent className="p-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3">
+                <div className="bg-red-50 border border-red-200 text-red-600 text-xs rounded px-3 py-2">
                   {error}
                 </div>
               )}
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Judul <span className="text-red-500">*</span>
-                </label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-gray-600">Judul</label>
                 <Input
                   placeholder="Judul informasi"
                   value={judul}
@@ -184,38 +162,26 @@ export default function AdminInfoForm() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Konten <span className="text-red-500">*</span>
-                </label>
-                <RichTextEditor
-                  content={konten}
-                  onChange={setKonten}
-                  placeholder="Tulis konten informasi di sini..."
-                />
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-gray-600">Konten</label>
+                <RichTextEditor content={konten} onChange={setKonten} />
               </div>
 
               {existingPhotos.length > 0 && (
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Foto Saat Ini
-                  </label>
-                  <div className="flex flex-wrap gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-gray-600">Foto Saat Ini</label>
+                  <div className="flex flex-wrap gap-2">
                     {existingPhotos.map((url, index) => (
                       <div key={index} className="relative group">
-                        <div className="w-24 h-24 rounded-lg overflow-hidden border border-gray-200">
-                          <img
-                            src={url}
-                            alt={`Foto ${index + 1}`}
-                            className="w-full h-full object-cover"
-                          />
+                        <div className="w-20 h-20 rounded overflow-hidden border border-gray-200">
+                          <img src={url} alt="" className="w-full h-full object-cover" />
                         </div>
                         <button
                           type="button"
                           onClick={() => removeExistingPhoto(index)}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
                         >
-                          ×
+                          <X className="w-3 h-3" />
                         </button>
                       </div>
                     ))}
@@ -225,24 +191,15 @@ export default function AdminInfoForm() {
 
               <InfoImageUpload photos={photos} setPhotos={setPhotos} />
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => navigate('/admin/informasi')}
-                >
+              <div className="flex justify-end gap-2 pt-3 border-t border-gray-100">
+                <Button type="button" variant="ghost" size="sm" onClick={() => navigate('/admin/informasi')}>
                   Batal
                 </Button>
-                <Button type="submit" disabled={saving}>
-                  {saving ? (
+                <Button type="submit" size="sm" disabled={saving}>
+                  {saving ? 'Menyimpan...' : (
                     <>
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
-                      Menyimpan...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="w-4 h-4 mr-2" />
-                      {isEditing ? 'Simpan Perubahan' : 'Publikasikan'}
+                      <Save className="w-3.5 h-3.5 mr-1" />
+                      {isEditing ? 'Simpan' : 'Publikasikan'}
                     </>
                   )}
                 </Button>

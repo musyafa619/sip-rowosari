@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Search, Filter, ListFilter } from 'lucide-react'
+import { Search, Filter } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
@@ -70,16 +70,13 @@ export default function ComplaintList({ showNama = false, showAdminActions = fal
   }, [fetchCounts])
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-          <ListFilter className="w-5 h-5 text-primary" />
-          {title}
-        </h2>
-        <Badge variant="outline">{complaints.length} pengaduan</Badge>
+        <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
+        <span className="text-xs text-gray-400">{complaints.length} item</span>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5">
         <Badge
           variant={!statusFilter ? 'default' : 'outline'}
           className="cursor-pointer"
@@ -110,42 +107,40 @@ export default function ComplaintList({ showNama = false, showAdminActions = fal
         </Badge>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
           <Input
-            placeholder="Cari berdasarkan judul atau lokasi..."
+            placeholder="Cari..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
+            className="pl-8 h-8 text-sm"
           />
         </div>
         <Select
           value={kategoriFilter}
           onChange={(e) => setKategoriFilter(e.target.value)}
-          className="sm:w-48"
+          className="sm:w-40 h-8 text-sm"
         >
           <option value="">Semua Kategori</option>
           {kategoriOptions.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </Select>
       </div>
 
       {loading ? (
-        <div className="text-center py-12">
-          <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-gray-500">Memuat data...</p>
+        <div className="text-center py-10">
+          <div className="w-5 h-5 border-2 border-gray-300 border-t-primary rounded-full animate-spin mx-auto mb-2" />
+          <p className="text-xs text-gray-400">Memuat...</p>
         </div>
       ) : complaints.length === 0 ? (
-        <div className="text-center py-12">
-          <Filter className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500">Tidak ada pengaduan yang ditemukan</p>
+        <div className="text-center py-10">
+          <Filter className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+          <p className="text-xs text-gray-400">Tidak ada data</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {complaints.map((complaint) => (
             <ComplaintCard
               key={complaint.id}

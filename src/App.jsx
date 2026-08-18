@@ -9,7 +9,6 @@ import AdminPengaduan from '@/pages/AdminPengaduan'
 import AdminDetail from '@/pages/AdminDetail'
 import AdminInfoCenter from '@/pages/AdminInfoCenter'
 import AdminInfoForm from '@/pages/AdminInfoForm'
-import FileUploadTest from '@/pages/FileUploadTest'
 
 export default function App() {
   return (
@@ -19,7 +18,6 @@ export default function App() {
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/test-upload" element={<FileUploadTest />} />
             <Route path="/informasi/:id" element={<InfoDetail />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />

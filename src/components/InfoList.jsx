@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Search, Newspaper } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
 import InfoCard from './InfoCard'
 import { supabase } from '@/lib/supabase'
 
@@ -38,37 +37,34 @@ export default function InfoList({ showAdminActions = false, onEdit, onDelete, t
   }, [fetchInfos])
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-          <Newspaper className="w-5 h-5 text-primary" />
-          {title}
-        </h2>
-        <Badge variant="outline">{infos.length} informasi</Badge>
+        <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
+        <span className="text-xs text-gray-400">{infos.length} item</span>
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
         <Input
-          placeholder="Cari informasi..."
+          placeholder="Cari..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-9"
+          className="pl-8 h-8 text-sm"
         />
       </div>
 
       {loading ? (
-        <div className="text-center py-12">
-          <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-gray-500">Memuat data...</p>
+        <div className="text-center py-10">
+          <div className="w-5 h-5 border-2 border-gray-300 border-t-primary rounded-full animate-spin mx-auto mb-2" />
+          <p className="text-xs text-gray-400">Memuat...</p>
         </div>
       ) : infos.length === 0 ? (
-        <div className="text-center py-12">
-          <Newspaper className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500">Belum ada informasi</p>
+        <div className="text-center py-10">
+          <Newspaper className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+          <p className="text-xs text-gray-400">Belum ada informasi</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {infos.map((info) => (
             <InfoCard
               key={info.id}
