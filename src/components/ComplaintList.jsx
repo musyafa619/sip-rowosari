@@ -4,16 +4,19 @@ import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import ComplaintCard from './ComplaintCard'
+import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import { kategoriOptions } from '@/data/dummy'
 import { supabase } from '@/lib/supabase'
 
-export default function ComplaintList({ showNama = false, showAdminActions = false, title = "Daftar Pengaduan" }) {
+export default function ComplaintList({ showNama = false, showAdminActions = false, onDeleteSuccess, title = "Daftar Pengaduan" }) {
   const [complaints, setComplaints] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [kategoriFilter, setKategoriFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [counts, setCounts] = useState({ total: 0, menunggu: 0, diproses: 0, selesai: 0 })
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [deleting, setDeleting] = useState(false)
 
   const fetchComplaints = useCallback(async () => {
     setLoading(true)
@@ -68,6 +71,44 @@ export default function ComplaintList({ showNama = false, showAdminActions = fal
   useEffect(() => {
     fetchCounts()
   }, [fetchCounts])
+
+  const handleDeleteRequest = (complaint) => {
+    setDeleteTarget(complaint)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return
+    setDeleting(true)
+
+    try {
+      if (deleteTarget.foto_urls?.length > 0) {
+        const paths = deleteTarget.foto_urls.map((url) => {
+          const parts = url.split('/')
+          return parts.slice(parts.indexOf('complaint-photos') + 1).join('/')
+        })
+        await supabase.storage.from('complaint-photos').remove(paths)
+      }
+
+      const { error } = await supabase.from('complaints').delete().eq('id', deleteTarget.id)
+      if (error) {
+        console.error('Delete error:', error)
+        alert('Gagal menghapus pengaduan. Cek konsol untuk detail.')
+        setDeleting(false)
+        setDeleteTarget(null)
+        return
+      }
+
+      setComplaints((prev) => prev.filter((c) => c.id !== deleteTarget.id))
+      fetchCounts()
+      onDeleteSuccess?.()
+    } catch (err) {
+      console.error('Delete error:', err)
+      alert('Terjadi kesalahan saat menghapus.')
+    } finally {
+      setDeleting(false)
+      setDeleteTarget(null)
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -147,10 +188,20 @@ export default function ComplaintList({ showNama = false, showAdminActions = fal
               complaint={complaint}
               showNama={showNama}
               showAdminActions={showAdminActions}
+              onDelete={handleDeleteRequest}
             />
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Hapus Pengaduan?"
+        description={`"${deleteTarget?.judul}" akan dihapus permanen beserta foto terkait. Aksi ini tidak dapat dibatalkan.`}
+        loading={deleting}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => { if (!deleting) setDeleteTarget(null) }}
+      />
     </div>
   )
 }

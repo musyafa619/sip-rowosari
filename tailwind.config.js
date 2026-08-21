@@ -8,24 +8,29 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#1a7f37',
-          hover: '#15612a',
-          light: '#eef6f0',
+          DEFAULT: '#059669',
+          hover: '#047857',
+          light: '#ecfdf5',
+          50: '#f0fdf4',
         },
-        secondary: {
-          DEFAULT: '#4a5568',
-          light: '#edf0f4',
+        accent: {
+          DEFAULT: '#f59e0b',
+          light: '#fffbeb',
         },
-        surface: '#f7f8fa',
-        'bg-alt': '#f0f2f5',
+        surface: '#f8fafc',
+        muted: '#64748b',
         status: {
-          menunggu: '#d97706',
-          diproses: '#2563eb',
-          selesai: '#059669',
+          menunggu: '#f59e0b',
+          diproses: '#3b82f6',
+          selesai: '#10b981',
         },
       },
       fontFamily: {
         sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        'xl': '0.75rem',
+        '2xl': '1rem',
       },
     },
   },

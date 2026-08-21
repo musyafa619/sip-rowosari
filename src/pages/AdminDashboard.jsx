@@ -29,24 +29,24 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-        <h1 className="text-lg font-semibold text-gray-900 mb-1">Dashboard</h1>
-        <p className="text-xs text-gray-500 mb-6">Kelola pengaduan dan informasi warga</p>
+      <div className="max-w-xl mx-auto px-4 sm:px-6 py-8">
+        <h1 className="text-lg font-bold text-gray-900 mb-1">Dashboard</h1>
+        <p className="text-xs text-gray-400 mb-6">Kelola pengaduan dan informasi warga</p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-3">
           <Card
-            className="cursor-pointer hover:border-gray-300 transition-colors"
+            className="cursor-pointer card-hover border-l-[3px] border-l-primary"
             onClick={() => navigate('/admin/pengaduan')}
           >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center">
-                    <FileText className="w-4 h-4 text-gray-600" />
+                  <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">Pengaduan</p>
-                    <p className="text-xs text-gray-400">{complaintCount} total</p>
+                    <p className="text-sm font-bold text-gray-900">Pusat Pengaduan</p>
+                    <p className="text-xs text-gray-400">{complaintCount} pengaduan</p>
                   </div>
                 </div>
                 <ArrowRight className="w-4 h-4 text-gray-300" />
@@ -55,18 +55,18 @@ export default function AdminDashboard() {
           </Card>
 
           <Card
-            className="cursor-pointer hover:border-gray-300 transition-colors"
+            className="cursor-pointer card-hover border-l-[3px] border-l-amber-400"
             onClick={() => navigate('/admin/informasi')}
           >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center">
-                    <Newspaper className="w-4 h-4 text-gray-600" />
+                  <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
+                    <Newspaper className="w-5 h-5 text-amber-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">Informasi</p>
-                    <p className="text-xs text-gray-400">{infoCount} total</p>
+                    <p className="text-sm font-bold text-gray-900">Pusat Informasi</p>
+                    <p className="text-xs text-gray-400">{infoCount} informasi</p>
                   </div>
                 </div>
                 <ArrowRight className="w-4 h-4 text-gray-300" />

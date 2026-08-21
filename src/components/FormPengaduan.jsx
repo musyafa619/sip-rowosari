@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { X, Upload } from 'lucide-react'
+import { X, Upload, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -123,10 +123,11 @@ export default function FormPengaduan({ onSubmitSuccess }) {
 
   if (isSubmitted) {
     return (
-      <div className="border border-primary/20 bg-primary-light rounded-md p-6 text-center">
-        <p className="text-sm font-medium text-primary mb-1">Pengaduan terkirim</p>
-        <p className="text-xs text-gray-500 mb-4">Terima kasih, laporan Anda akan segera ditindaklanjuti.</p>
-        <Button onClick={() => setIsSubmitted(false)} variant="outline" size="sm">
+      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-center">
+        <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
+        <p className="text-sm font-semibold text-emerald-800 mb-1">Terkirim!</p>
+        <p className="text-xs text-emerald-600 mb-4">Laporan Anda akan segera ditindaklanjuti oleh pengurus.</p>
+        <Button onClick={() => setIsSubmitted(false)} variant="outline" size="sm" className="border-emerald-300 text-emerald-700 hover:bg-emerald-100">
           Kirim Lagi
         </Button>
       </div>
@@ -135,69 +136,71 @@ export default function FormPengaduan({ onSubmitSuccess }) {
 
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-900 mb-4">Buat Pengaduan</h2>
+      <h2 className="text-base font-bold text-gray-900 mb-1">Buat Pengaduan</h2>
+      <p className="text-xs text-gray-400 mb-5">Sampaikan keluhan Anda secara anonim</p>
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {submitError && (
-          <div className="bg-red-50 border border-red-200 text-red-600 text-xs rounded px-3 py-2">
+          <div className="bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg px-3 py-2">
             {submitError}
           </div>
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-600">Judul</label>
-            <Input placeholder="Judul pengaduan" {...register('judul')} />
-            {errors.judul && <p className="text-xs text-red-500">{errors.judul.message}</p>}
+            <label className="text-xs font-semibold text-gray-700">Judul</label>
+            <Input placeholder="Ringkasan singkat masalah" {...register('judul')} />
+            {errors.judul && <p className="text-[11px] text-red-500">{errors.judul.message}</p>}
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-600">Nama Pelapor</label>
+            <label className="text-xs font-semibold text-gray-700">Nama Pelapor</label>
             <Input placeholder="Nama Anda" {...register('nama_pelapor')} />
-            {errors.nama_pelapor && <p className="text-xs text-red-500">{errors.nama_pelapor.message}</p>}
+            {errors.nama_pelapor && <p className="text-[11px] text-red-500">{errors.nama_pelapor.message}</p>}
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-600">Tanggal</label>
+            <label className="text-xs font-semibold text-gray-700">Tanggal</label>
             <Input type="date" {...register('tanggal_laporan')} />
-            {errors.tanggal_laporan && <p className="text-xs text-red-500">{errors.tanggal_laporan.message}</p>}
+            {errors.tanggal_laporan && <p className="text-[11px] text-red-500">{errors.tanggal_laporan.message}</p>}
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-600">Kategori</label>
+            <label className="text-xs font-semibold text-gray-700">Kategori</label>
             <Select {...register('kategori')}>
-              <option value="">Pilih</option>
+              <option value="">Pilih kategori</option>
               {kategoriOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </Select>
-            {errors.kategori && <p className="text-xs text-red-500">{errors.kategori.message}</p>}
+            {errors.kategori && <p className="text-[11px] text-red-500">{errors.kategori.message}</p>}
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-gray-600">Lokasi</label>
+          <label className="text-xs font-semibold text-gray-700">Lokasi</label>
           <Input placeholder="Jl. Melati RT 02/RW 05" {...register('lokasi')} />
-          {errors.lokasi && <p className="text-xs text-red-500">{errors.lokasi.message}</p>}
+          {errors.lokasi && <p className="text-[11px] text-red-500">{errors.lokasi.message}</p>}
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-gray-600">Deskripsi</label>
-          <Textarea placeholder="Jelaskan pengaduan Anda..." rows={3} {...register('deskripsi')} />
-          {errors.deskripsi && <p className="text-xs text-red-500">{errors.deskripsi.message}</p>}
+          <label className="text-xs font-semibold text-gray-700">Deskripsi</label>
+          <Textarea placeholder="Jelaskan masalah Anda secara detail..." rows={3} {...register('deskripsi')} />
+          {errors.deskripsi && <p className="text-[11px] text-red-500">{errors.deskripsi.message}</p>}
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-gray-600">Foto (opsional, maks. 3)</label>
+          <label className="text-xs font-semibold text-gray-700">Foto <span className="font-normal text-gray-400">(opsional, maks. 3)</span></label>
           <div className="flex flex-wrap gap-2">
             {photos.map((photo, index) => (
               <div key={index} className="relative group">
-                <div className="w-20 h-20 rounded overflow-hidden border border-gray-200">
+                <div className="w-20 h-20 rounded-lg overflow-hidden border border-gray-100 shadow-sm">
                   <img src={photo.preview} alt="" className="w-full h-full object-cover" />
                 </div>
                 <button
                   type="button"
                   onClick={() => removePhoto(index)}
-                  className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -207,10 +210,10 @@ export default function FormPengaduan({ onSubmitSuccess }) {
               <div className="relative">
                 <button
                   type="button"
-                  className="w-20 h-20 rounded border border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-gray-400 transition-colors"
+                  className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400 hover:border-primary/40 hover:text-primary/60 transition-colors"
                 >
                   <Upload className="w-4 h-4" />
-                  <span className="text-[10px] mt-0.5">Upload</span>
+                  <span className="text-[10px] mt-0.5 font-medium">Upload</span>
                 </button>
                 <input
                   type="file"
@@ -224,7 +227,7 @@ export default function FormPengaduan({ onSubmitSuccess }) {
           </div>
         </div>
 
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
+        <Button type="submit" className="w-full shadow-md shadow-primary/20" disabled={isSubmitting}>
           {isSubmitting ? 'Mengirim...' : 'Kirim Pengaduan'}
         </Button>
       </form>

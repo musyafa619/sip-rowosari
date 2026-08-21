@@ -43,20 +43,25 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-surface px-4">
       <div className="w-full max-w-xs">
-        <h1 className="text-lg font-semibold text-gray-900 text-center mb-1">Admin</h1>
-        <p className="text-xs text-gray-400 text-center mb-6">Masuk ke dashboard pengelola</p>
+        <div className="text-center mb-6">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary to-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-primary/20">
+            <span className="text-white text-sm font-bold">RW</span>
+          </div>
+          <h1 className="text-lg font-bold text-gray-900">Admin</h1>
+          <p className="text-xs text-gray-400 mt-0.5">Masuk ke dashboard pengelola</p>
+        </div>
 
         <Card>
           <CardContent className="p-5">
-            <form onSubmit={handleLogin} className="space-y-3">
+            <form onSubmit={handleLogin} className="space-y-3.5">
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-600 text-xs rounded px-3 py-2">
+                <div className="bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg px-3 py-2 font-medium">
                   {error}
                 </div>
               )}
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-gray-600">Username</label>
+                <label className="text-xs font-semibold text-gray-700">Username</label>
                 <Input
                   type="text"
                   value={username}
@@ -66,7 +71,7 @@ export default function AdminLogin() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-gray-600">Password</label>
+                <label className="text-xs font-semibold text-gray-700">Password</label>
                 <Input
                   type="password"
                   value={password}
@@ -75,7 +80,7 @@ export default function AdminLogin() {
                 />
               </div>
 
-              <Button type="submit" className="w-full" size="sm" disabled={isLoading}>
+              <Button type="submit" className="w-full shadow-md shadow-primary/20" disabled={isLoading}>
                 {isLoading ? 'Masuk...' : 'Masuk'}
               </Button>
             </form>

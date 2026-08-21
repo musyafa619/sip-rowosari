@@ -13,7 +13,6 @@ import { supabase } from '@/lib/supabase'
 export default function AdminDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-
   const [complaint, setComplaint] = useState(null)
   const [loading, setLoading] = useState(true)
   const [status, setStatus] = useState('menunggu')
@@ -29,31 +28,17 @@ export default function AdminDetail() {
   useEffect(() => {
     const fetchComplaint = async () => {
       setLoading(true)
-      const { data, error } = await supabase
-        .from('complaints')
-        .select('*')
-        .eq('id', id)
-        .single()
-
-      if (error || !data) {
-        setComplaint(null)
-      } else {
-        setComplaint(data)
-        setStatus(data.status)
-      }
+      const { data } = await supabase.from('complaints').select('*').eq('id', id).single()
+      if (!data) { setComplaint(null) } else { setComplaint(data); setStatus(data.status) }
       setLoading(false)
     }
-
     fetchComplaint()
   }, [id])
 
   const handleSave = async () => {
     setIsSaving(true)
     const { error } = await supabase.from('complaints').update({ status }).eq('id', id)
-
-    if (error) {
-      console.error('Update error:', error)
-    } else {
+    if (!error) {
       setComplaint((prev) => ({ ...prev, status }))
       setShowSuccess(true)
       setTimeout(() => setShowSuccess(false), 3000)
@@ -64,7 +49,7 @@ export default function AdminDetail() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
-        <div className="w-5 h-5 border-2 border-gray-300 border-t-primary rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-gray-200 border-t-primary rounded-full animate-spin" />
       </div>
     )
   }
@@ -84,13 +69,13 @@ export default function AdminDetail() {
   return (
     <div className="min-h-screen bg-surface">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/admin/pengaduan')} className="mb-4 -ml-2">
+        <Button variant="ghost" size="sm" onClick={() => navigate('/admin/pengaduan')} className="mb-4 -ml-2 text-xs font-medium">
           <ArrowLeft className="w-3.5 h-3.5 mr-1" />
           Kembali
         </Button>
 
         {showSuccess && (
-          <div className="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded px-3 py-2 flex items-center gap-1.5">
+          <div className="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-lg px-3 py-2 flex items-center gap-1.5 font-medium">
             <CheckCircle className="w-3.5 h-3.5" />
             Status diperbarui
           </div>
@@ -102,47 +87,44 @@ export default function AdminDetail() {
               <CardContent className="p-5 space-y-4">
                 <div className="flex flex-wrap items-center gap-2">
                   <StatusBadge status={complaint.status} />
-                  <span className="text-[11px] text-gray-400">{kategoriLabels[complaint.kategori]}</span>
+                  <span className="text-[11px] text-gray-400 font-medium">{kategoriLabels[complaint.kategori]}</span>
                 </div>
 
-                <h1 className="text-base font-semibold text-gray-900">{complaint.judul}</h1>
+                <h1 className="text-base font-bold text-gray-900 leading-snug">{complaint.judul}</h1>
 
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   <div>
-                    <p className="text-gray-400 mb-0.5">Pelapor</p>
-                    <p className="text-gray-700 font-medium">{complaint.nama_pelapor}</p>
+                    <p className="text-gray-400 font-medium mb-0.5">Pelapor</p>
+                    <p className="text-gray-800 font-semibold">{complaint.nama_pelapor}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400 mb-0.5">Tanggal</p>
-                    <p className="text-gray-700 font-medium">{formatDate(complaint.tanggal_laporan)}</p>
+                    <p className="text-gray-400 font-medium mb-0.5">Tanggal</p>
+                    <p className="text-gray-800 font-semibold">{formatDate(complaint.tanggal_laporan)}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400 mb-0.5">Lokasi</p>
-                    <p className="text-gray-700 font-medium">{complaint.lokasi}</p>
+                    <p className="text-gray-400 font-medium mb-0.5">Lokasi</p>
+                    <p className="text-gray-800 font-semibold">{complaint.lokasi}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400 mb-0.5">ID</p>
-                    <p className="text-gray-700 font-mono text-[11px]">{complaint.id.substring(0, 8)}</p>
+                    <p className="text-gray-400 font-medium mb-0.5">ID</p>
+                    <p className="text-gray-800 font-mono text-[11px]">{complaint.id.substring(0, 8)}</p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-xs text-gray-400 mb-1">Deskripsi</p>
-                  <p className="text-sm text-gray-600 whitespace-pre-wrap bg-gray-50 rounded p-3">
+                  <p className="text-xs text-gray-400 font-medium mb-1">Deskripsi</p>
+                  <p className="text-sm text-gray-600 whitespace-pre-wrap bg-gray-50 rounded-lg p-3 leading-relaxed">
                     {complaint.deskripsi}
                   </p>
                 </div>
 
                 {complaint.foto_urls?.length > 0 && (
                   <div>
-                    <p className="text-xs text-gray-400 mb-1.5">Foto</p>
+                    <p className="text-xs text-gray-400 font-medium mb-1.5">Foto</p>
                     <div className="flex flex-wrap gap-2">
                       {complaint.foto_urls.map((url, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setLightboxIndex(index)}
-                          className="w-20 h-20 rounded overflow-hidden border border-gray-200"
-                        >
+                        <button key={index} onClick={() => setLightboxIndex(index)}
+                          className="w-20 h-20 rounded-lg overflow-hidden border border-gray-100 hover:border-gray-200 transition-colors">
                           <img src={url} alt="" className="w-full h-full object-cover" />
                         </button>
                       ))}
@@ -156,24 +138,15 @@ export default function AdminDetail() {
           <div>
             <Card className="sticky top-20">
               <CardContent className="p-5 space-y-3">
-                <p className="text-xs font-medium text-gray-600">Update Status</p>
+                <p className="text-xs font-semibold text-gray-700">Update Status</p>
                 <Select value={status} onChange={(e) => setStatus(e.target.value)}>
                   {statusOptions.map((opt) => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                   ))}
                 </Select>
-                <Button
-                  onClick={handleSave}
-                  className="w-full"
-                  size="sm"
-                  disabled={isSaving || status === complaint.status}
-                >
-                  {isSaving ? 'Menyimpan...' : (
-                    <>
-                      <Save className="w-3.5 h-3.5 mr-1" />
-                      Simpan
-                    </>
-                  )}
+                <Button onClick={handleSave} className="w-full shadow-sm shadow-primary/20" size="sm"
+                  disabled={isSaving || status === complaint.status}>
+                  {isSaving ? 'Menyimpan...' : <><Save className="w-3.5 h-3.5 mr-1" />Simpan</>}
                 </Button>
               </CardContent>
             </Card>
@@ -182,11 +155,7 @@ export default function AdminDetail() {
       </div>
 
       {lightboxIndex !== null && complaint.foto_urls && (
-        <PhotoLightbox
-          photos={complaint.foto_urls}
-          initialIndex={lightboxIndex}
-          onClose={() => setLightboxIndex(null)}
-        />
+        <PhotoLightbox photos={complaint.foto_urls} initialIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
       )}
     </div>
   )
